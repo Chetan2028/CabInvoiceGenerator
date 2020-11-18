@@ -12,8 +12,7 @@ namespace CabInvoiceGenerator
             rides[0] = new Ride(10, 10);
             rides[1] = new Ride(4.5, 8);
             rides[2] = new Ride(20, 30);
-            double totalFare = invoiceGenerator.CalculateMultipleRides(rides);
-            Console.WriteLine("Total Fare : " + totalFare);
+            Console.WriteLine(invoiceGenerator.CalculateMultipleRides(rides));
         }
     }
 }
