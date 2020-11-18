@@ -8,12 +8,12 @@ namespace CabInvoiceGenerator
         {
             Console.WriteLine("Welcome to Cab Invoice Generator");
             InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
-            Console.WriteLine("Enter the distance");
-            double distance =Convert.ToDouble( Console.ReadLine());
-            Console.WriteLine("Enter the time");
-            int time = Convert.ToInt32(Console.ReadLine());
-            double totalFare = invoiceGenerator.CalculateFare(distance,time);
-            Console.WriteLine("Total Fare : {0}",totalFare);
+            Ride[] rides = new Ride[3];
+            rides[0] = new Ride(10, 10);
+            rides[1] = new Ride(4.5, 8);
+            rides[2] = new Ride(20, 30);
+            double totalFare = invoiceGenerator.CalculateMultipleRides(rides);
+            Console.WriteLine("Total Fare : " + totalFare);
         }
     }
 }
