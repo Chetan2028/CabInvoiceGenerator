@@ -32,14 +32,16 @@ namespace CabInvoiceGenerator
         /// </summary>
         /// <param name="rides">The rides.</param>
         /// <returns></returns>
-        public double CalculateMultipleRides(Ride[] rides)
+        public string CalculateMultipleRides(Ride[] rides)
         {
             double totalFare = 0;
+            int totalRides = 0;
             foreach (Ride ride in rides)
             {
                 totalFare += CalculateFare(ride.distance, ride.time);
+                totalRides++;
             }
-            return totalFare;
+            return "Total Number of Rides : " + totalRides + "\nTotal Fare : " + totalFare + "\nAverage Fare Ride : " + totalFare / totalRides;
         }
     }
 }
