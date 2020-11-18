@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CabInvoiceGenerator
 {
-    class InvoiceGenerator
+    public class InvoiceGenerator
     {
         /// Constants
         public const int MINIMUM_FARE = 5;
