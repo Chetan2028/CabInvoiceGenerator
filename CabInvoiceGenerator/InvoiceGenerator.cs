@@ -11,6 +11,10 @@ namespace CabInvoiceGenerator
         public const int COST_PER_KM = 10;
         public const int COST_PER_TIME = 1;
 
+        public InvoiceGenerator()
+        {
+            
+        }
         /// <summary>
         /// Calculates the fare.
         /// </summary>
@@ -22,6 +26,20 @@ namespace CabInvoiceGenerator
             double totalFare = distance * COST_PER_KM + COST_PER_TIME * time;
             return Math.Max(totalFare, MINIMUM_FARE);
         }
-        
+
+        /// <summary>
+        /// Calculates the multiple rides.
+        /// </summary>
+        /// <param name="rides">The rides.</param>
+        /// <returns></returns>
+        public double CalculateMultipleRides(Ride[] rides)
+        {
+            double totalFare = 0;
+            foreach (Ride ride in rides)
+            {
+                totalFare += CalculateFare(ride.distance, ride.time);
+            }
+            return totalFare;
+        }
     }
 }
