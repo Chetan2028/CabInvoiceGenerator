@@ -6,42 +6,94 @@ namespace CabInvoiceGenerator
 {
     public class InvoiceGenerator
     {
-        /// Constants
-        public const int MINIMUM_FARE = 5;
-        public const int COST_PER_KM = 10;
-        public const int COST_PER_TIME = 1;
+        //Variables
+        RideType rideType;
+        private RideRepository rideRepository;
 
-        public InvoiceGenerator()
+        //COnstants
+        private readonly double MINIMUM_COST_PER_KM;
+        private readonly int COST_PER_TIME;
+        private readonly double MINIMUM_FARE;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvoiceGenerator"/> class.
+        /// </summary>
+        /// <param name="rideType">Type of the ride.</param>
+        /// <exception cref="CabInvoiceGenerator.CabInvoiceException">Invalid Ride Type</exception>
+        public InvoiceGenerator(RideType rideType)
         {
-            
+            this.rideType = rideType;
+            this.rideRepository = new RideRepository();
+            try
+            {
+                if (rideType.Equals(RideType.PREMIUM))
+                {
+                    this.MINIMUM_COST_PER_KM = 15;
+                    this.COST_PER_TIME = 2;
+                    this.MINIMUM_FARE = 20;
+                }
+                if (rideType.Equals(RideType.NORMAL))
+                {
+                    this.MINIMUM_COST_PER_KM = 10;
+                    this.COST_PER_TIME = 1;
+                    this.MINIMUM_FARE = 5;
+                }
+            }
+            catch (CabInvoiceException)
+            {
+                throw new CabInvoiceException(CabInvoiceException.ExceptionType.INVALID_RIDE_TYPE, "Invalid Ride Type");
+            }
         }
+
+        public double CalculateFare(double distance , int time)
+        {
+            double totalFare = 0;
+            try
+            {
+                totalFare = distance * MINIMUM_COST_PER_KM + time * COST_PER_TIME;
+            }
+            catch (CabInvoiceException)
+            {
+                if (rideType.Equals(null))
+                {
+                    throw new CabInvoiceException(CabInvoiceException.ExceptionType.INVALID_RIDE_TYPE, "Invalid Ride Type");
+                }
+                if (distance <= 0)
+                {
+                    throw new CabInvoiceException(CabInvoiceException.ExceptionType.INVALID_DISTANCE, "Invalid Distance");
+                }
+                if (time < 0)
+                {
+                    throw new CabInvoiceException(CabInvoiceException.ExceptionType.INVALID_TIME, "Invalid Time");
+                }
+            }
+            return Math.Max(MINIMUM_FARE, totalFare);
+        }
+
         /// <summary>
         /// Calculates the fare.
         /// </summary>
-        /// <param name="distance">The distance.</param>
-        /// <param name="time">The time.</param>
-        /// <returns></returns>
-        public double CalculateFare(double distance , int time)
-        {
-            double totalFare = distance * COST_PER_KM + COST_PER_TIME * time;
-            return Math.Max(totalFare, MINIMUM_FARE);
-        }
-
-        /// <summary>
-        /// Calculates the multiple rides.
-        /// </summary>
         /// <param name="rides">The rides.</param>
         /// <returns></returns>
-        public string CalculateMultipleRides(Ride[] rides)
+        /// <exception cref="CabInvoiceGenerator.CabInvoiceException">Rides Are Null</exception>
+        public InvoiceSummary CalculateFare(Ride[] rides)
         {
             double totalFare = 0;
-            int totalRides = 0;
-            foreach (Ride ride in rides)
+            try
             {
-                totalFare += CalculateFare(ride.distance, ride.time);
-                totalRides++;
+                foreach (Ride ride in rides)
+                {
+                    totalFare += CalculateFare(ride.distance, ride.time);
+                }
             }
-            return "Total Number of Rides : " + totalRides + "\nTotal Fare : " + totalFare + "\nAverage Fare Ride : " + totalFare / totalRides;
+            catch (CabInvoiceException)
+            {
+                if (rides == null)
+                {
+                    throw new CabInvoiceException(CabInvoiceException.ExceptionType.NULL_RIDES, "Rides Are Null");
+                }
+            }
+            return new InvoiceSummary(rides.Length, totalFare);
         }
     }
 }
